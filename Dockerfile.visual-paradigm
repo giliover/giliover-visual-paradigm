@@ -1,0 +1,32 @@
+FROM ubuntu:latest
+
+ENV UNAME=ubuntu
+ENV DEBIAN_FRONTEND=noninteractive
+VOLUME /tmp/.X11-unix
+ENV DISPLAY $DISPLAY
+
+RUN sed -i 's|http://archive.ubuntu.com/ubuntu/|http://br.archive.ubuntu.com/ubuntu/|g' /etc/apt/sources.list /etc/apt/sources.list.d/ubuntu.sources
+
+RUN apt-get update && apt-get install -y \
+    curl \
+    dbus-x11 \
+    lsb-release \
+    gnupg \
+    qtbase5-dev \ 
+    qtbase5-dev-tools \
+    qtdeclarative5-dev \
+    qttools5-dev \
+    qttools5-dev-tools
+
+RUN curl -L -o "visual-paradigm.sh" 'https://usa15-dl.visual-paradigm.com/visual-paradigm/vp17.2/20240905/Visual_Paradigm_17_2_20240905_Linux64.sh'
+
+RUN chmod +x visual-paradigm.sh
+
+COPY ./entrypoint.visual-paradigm.sh entrypoint.visual-paradigm.sh
+
+RUN chmod +x entrypoint.visual-paradigm.sh
+
+USER ubuntu
+
+ENTRYPOINT ["./entrypoint.visual-paradigm.sh"]
+
